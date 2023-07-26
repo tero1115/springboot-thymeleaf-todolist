@@ -43,30 +43,21 @@
             autofocus
         />
         <hr/>
-        <ul id="todoList" class="list-unstyled">
-          <li class="ui-state-default" >
+
+        <ul id="todoList" class="list-unstyled" th:each="todo : ${dto.todoList}">
+          <li class="ui-state-default">
             <div class="checkbox">
               <label>
                 <input
                     onchange="setDoneY(0)"
                     type="checkbox"
                 />
-                <span>밥먹기</span>
-              </label>
-            </div>
-          </li>
-          <li class="ui-state-default" >
-            <div class="checkbox">
-              <label>
-                <input
-                    onchange="setDoneY(0)"
-                    type="checkbox"
-                />
-                <span>잠자기</span>
+                <span th:text="${todo.content}"></span>
               </label>
             </div>
           </li>
         </ul>
+
         <div class="todo-footer">
           <strong>
             <span id="todoCount" class="count-todos">2</span>
@@ -78,7 +69,8 @@
     <div class="col-md-6">
       <div class="todolist">
         <h1>DONE LIST</h1>
-        <ul id="doneList" class="list-unstyled">
+        <ul id="doneList" class="list-unstyled" th:each="done : ${dto.doneList}">
+
           <li>
             <div class="checkbox">
               <label>
@@ -87,7 +79,7 @@
                     class="remove-item"
                     type="checkbox"
                 />
-                <span>일어나기</span>
+                <span th:text="${done.content}"> </span>
               </label>
               <button
                   onclick="setDelete(0)"
@@ -97,24 +89,7 @@
               </button>
             </div>
           </li>
-          <li>
-            <div class="checkbox">
-              <label>
-                <input
-                    onchange="setDoneN(0)"
-                    class="remove-item"
-                    type="checkbox"
-                />
-                <span>세수하기</span>
-              </label>
-              <button
-                  onclick="setDelete(0)"
-                  class="remove-item btn btn-default btn-xs pull-right"
-              >
-                <span class="glyphicon glyphicon-remove"></span>
-              </button>
-            </div>
-          </li>
+          
         </ul>
       </div>
     </div>

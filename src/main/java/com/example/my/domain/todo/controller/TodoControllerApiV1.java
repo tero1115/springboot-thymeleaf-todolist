@@ -26,6 +26,7 @@ public class TodoControllerApiV1 {
             @RequestBody ReqTodoTableInsertDTO dto,
             HttpSession session
     ) {
+        // session에 dto가 없으면 badRequest처리
         // TODO : 서비스에서 할 일 추가하기
         return null;
     }

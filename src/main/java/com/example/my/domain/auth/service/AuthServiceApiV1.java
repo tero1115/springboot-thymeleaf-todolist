@@ -27,14 +27,6 @@ public class AuthServiceApiV1 {
     private final UserRepository userRepository;
 
     public ResponseEntity<?> login(ReqLoginDTO dto, HttpSession session) {
-        // 로그인 정보 입력했는지 확인
-        if (dto.getUser().getId() == null ||
-                dto.getUser().getId().equals("") ||
-                dto.getUser().getPassword() == null ||
-                dto.getUser().getPassword().equals("")) {
-            throw new BadRequestException("아이디 혹은 비밀번호를 입력해주세요");
-        }
-
         // 리파지토리에서 아이디로 삭제되지 않은 유저 찾기
         Optional<UserEntity> userEntityOptional = userRepository.findByIdAndDeleteDateIsNull(dto.getUser().getId());
 
@@ -65,12 +57,12 @@ public class AuthServiceApiV1 {
     @Transactional
     public ResponseEntity<?> join(ReqJoinDTO dto) {
         // 회원가입 정보 입력했는지 확인
-        if (dto.getUser().getId() == null ||
-                dto.getUser().getId().equals("") ||
-                dto.getUser().getPassword() == null ||
-                dto.getUser().getPassword().equals("")) {
+        // if (dto.getUser().getId() == null ||
+            //     dto.getUser().getId().equals("") ||
+            //     dto.getUser().getPassword() == null ||
+            //     dto.getUser().getPassword().equals("")) {
 
-            throw new BadRequestException("아이디 혹은 비밀번호를 입력해주세요");
+            // throw new BadRequestException("아이디 혹은 비밀번호를 입력해주세요");
 
             // return new ResponseEntity<>(
             // ResponseDTO.builder()
@@ -79,7 +71,7 @@ public class AuthServiceApiV1 {
             // .build(),
             // HttpStatus.BAD_REQUEST
             // );
-        }
+        // }
 
         // 리파지토리에서 아이디로 유저 찾기
         Optional<UserEntity> userEntityOptional = userRepository.findById(dto.getUser().getId());

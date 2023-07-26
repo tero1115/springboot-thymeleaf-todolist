@@ -31,7 +31,7 @@ public class TodoServiceApiV1 {
         // TODO : 리파지토리에서 유저 기본키로 삭제되지 않은 할 일 목록 찾기
         // TODO : 응답 데이터로 리턴하기 (할 일 목록 조회에 성공하였습니다.)
         return null;
-    }
+    }   
 
     @Transactional
     public ResponseEntity<?> insertTodoTableData(ReqTodoTableInsertDTO dto, LoginUserDTO loginUserDTO) {
