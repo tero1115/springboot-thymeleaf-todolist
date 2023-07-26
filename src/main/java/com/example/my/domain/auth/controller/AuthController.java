@@ -1,34 +1,26 @@
 package com.example.my.domain.auth.controller;
 
-import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.servlet.ModelAndView;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class AuthController {
 
     @GetMapping("/auth/login")
-    public ModelAndView login() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("auth/login");
-        return modelAndView;
+    public String login() {
+        return "auth/login";
     }
 
     @GetMapping("/auth/join")
-    public ModelAndView join() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("auth/join");
-        return modelAndView;
+    public String join() {
+        return "auth/join";
     }
 
     @GetMapping("/auth/logout")
-    public ModelAndView logout(HttpSession session) {
-
+    public String logout(HttpSession session) {
         session.invalidate();
-
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("redirect:/auth/login");
-        return modelAndView;
+        return "redirect:/auth/login";
     }
 }
