@@ -1,5 +1,7 @@
 package com.example.my.domain.todo.controller;
 
+import com.example.my.common.dto.LoginUserDTO;
+import com.example.my.common.exception.BadRequestException;
 import com.example.my.domain.todo.dto.ReqTodoTableInsertDTO;
 import com.example.my.domain.todo.dto.ReqTodoTableUpdateDoneYnDTO;
 import com.example.my.domain.todo.service.TodoServiceApiV1;
@@ -18,7 +20,9 @@ public class TodoControllerApiV1 {
     @GetMapping
     public ResponseEntity<?> getTodoTableData(HttpSession session) {
         // TODO : 서비스에서 할 일 목록 가져오기
-        return null;
+        LoginUserDTO loginUserDTO = (LoginUserDTO)session.getAttribute("dto");
+
+        return todoServiceApiV1.getTodoTableData(loginUserDTO);
     }
 
     @PostMapping
@@ -27,8 +31,13 @@ public class TodoControllerApiV1 {
             HttpSession session
     ) {
         // session에 dto가 없으면 badRequest처리
+        LoginUserDTO userDTO = (LoginUserDTO)session.getAttribute("dto");
+        if (userDTO == null) {
+            new BadRequestException("유저 정보가 없습니다.");
+        }
+
         // TODO : 서비스에서 할 일 추가하기
-        return null;
+        return todoServiceApiV1.insertTodoTableData(dto, userDTO);
     }
 
     @PutMapping("/{todoIdx}")

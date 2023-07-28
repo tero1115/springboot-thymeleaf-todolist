@@ -60,7 +60,7 @@
 
         <div class="todo-footer">
           <strong>
-            <span id="todoCount" class="count-todos">2</span>
+            <span id="todoCount" class="count-todos" th:text="${dto.todoList.size()}"></span>
           </strong>
           항목 남았음
         </div>
@@ -172,12 +172,38 @@
     };
 
     const contentInput = document.querySelector("#content");
-    contentInput.addEventListener("keyup", (e) => {
+    contentInput.addEventListener("keypress", (e) => {
         if (e.code !== "Enter") return;
         if (contentInput.value === "") return;
 
         // TODO: 할 일 저장
 
+        // dto 만들기 (ReqTodoTableInsertDTO 참고)
+        const dto = {
+          todo : {
+            content : contentInput.value,
+          },
+        };
+
+        // fetch로 post 요청
+        fetch("/api/v1/todo",{
+          method : "POST",
+          headers : {
+            "Content-Type" : "application/json;charset=utf-8"
+          },
+          body : JSON.stringify(dto)
+        })
+        .then((response) => response.json())
+        .then((result) => {
+          if (!result.code === 0) {
+          // 응답 code가 0 아니면 새로고침
+          location.reload();
+          } else {
+            // 성공적으로 추가되면 새로고침 없이 현재 페이지 재로딩
+            window.location.href = window.location.href;
+          }
+        })
+        
     });
 
 
