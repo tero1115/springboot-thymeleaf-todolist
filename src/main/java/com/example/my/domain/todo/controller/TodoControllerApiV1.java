@@ -1,14 +1,23 @@
 package com.example.my.domain.todo.controller;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.my.common.dto.LoginUserDTO;
 import com.example.my.common.exception.BadRequestException;
 import com.example.my.domain.todo.dto.ReqTodoTableInsertDTO;
 import com.example.my.domain.todo.dto.ReqTodoTableUpdateDoneYnDTO;
 import com.example.my.domain.todo.service.TodoServiceApiV1;
+
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,8 +55,12 @@ public class TodoControllerApiV1 {
             @RequestBody ReqTodoTableUpdateDoneYnDTO dto,
             HttpSession session
     ) {
+
+        // session에 dto가 없으면 badRequest처리
+        LoginUserDTO userDTO = (LoginUserDTO)session.getAttribute("dto");
         // TODO : 서비스에서 할 일 완료 수정하기
-        return null;
+        return todoServiceApiV1.updateTodoTableData(todoIdx, dto, userDTO);
+
     }
 
     @DeleteMapping("/{todoIdx}")

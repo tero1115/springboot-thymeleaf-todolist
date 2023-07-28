@@ -1,24 +1,24 @@
 package com.example.my.domain.todo.service;
 
-import com.example.my.common.dto.LoginUserDTO;
-import com.example.my.common.dto.ResponseDTO;
-import com.example.my.common.exception.BadRequestException;
-import com.example.my.domain.todo.dto.ReqTodoTableInsertDTO;
-import com.example.my.domain.todo.dto.ReqTodoTableUpdateDoneYnDTO;
-import com.example.my.domain.todo.dto.ResTodoTableDTO;
-import com.example.my.model.todo.entity.TodoEntity;
-import com.example.my.model.todo.repository.TodoRepository;
-import com.example.my.model.user.entity.UserEntity;
-import com.example.my.model.user.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import com.example.my.common.dto.LoginUserDTO;
+import com.example.my.common.dto.ResponseDTO;
+import com.example.my.common.exception.BadRequestException;
+import com.example.my.domain.todo.dto.ReqTodoTableInsertDTO;
+import com.example.my.domain.todo.dto.ReqTodoTableUpdateDoneYnDTO;
+import com.example.my.model.todo.entity.TodoEntity;
+import com.example.my.model.todo.repository.TodoRepository;
+import com.example.my.model.user.entity.UserEntity;
+import com.example.my.model.user.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -38,13 +38,13 @@ public class TodoServiceApiV1 {
     public ResponseEntity<?> insertTodoTableData(ReqTodoTableInsertDTO dto, LoginUserDTO loginUserDTO) {
         // TODO : 할 일을 입력했는지 확인
         if (dto == null) {
-            new BadRequestException("할 일을 입력하지 않았습니다.");
+            throw new BadRequestException("할 일을 입력하지 않았습니다.");
         }
 
         // TODO : 리파지토리에서 유저 기본키로 삭제되지 않은 유저 찾기
         Optional<UserEntity> userEntitoyOptional = userRepository.findById(loginUserDTO.getUser().getIdx());
         if (!userEntitoyOptional.isPresent()) {
-            new BadRequestException("유저 정보가 없습니다.");
+            throw new BadRequestException("유저 정보가 없습니다.");
         }
         UserEntity userEntity = userEntitoyOptional.get();
 
@@ -72,11 +72,30 @@ public class TodoServiceApiV1 {
     public ResponseEntity<?> updateTodoTableData(Long todoIdx, ReqTodoTableUpdateDoneYnDTO dto,
             LoginUserDTO loginUserDTO) {
         // TODO : 리파지토리에서 할 일 기본키로 삭제되지 않은 할 일 찾기
+        Optional<TodoEntity> todoEntityOptional = todoRepository.findByIdxAndDeleteDateIsNull(todoIdx);
+        
         // TODO : 할 일이 null이면 (존재하지 않는 할 일입니다.) 리턴
+        if (!todoEntityOptional.isPresent()) {
+            throw new BadRequestException("존재하지 않는 할 일 입니다.");
+        }
+        TodoEntity todoEntity = todoEntityOptional.get();
+
         // TODO : 할 일 작성자와 로그인 유저가 다르면 (권한이 없습니다. )리턴
+        if (!todoEntity.getUserEntity().getIdx().equals(loginUserDTO.getUser().getIdx())) {
+            throw new BadRequestException("권한이 없습니다.");
+        }
+
         // TODO : 할 일 doneYn 업데이트
+        todoEntity.setDoneYn(dto.getTodo().getDoneYn());
+        todoRepository.save(todoEntity);
+
         // TODO : 응답 데이터로 리턴하기 (할 일 수정에 성공하였습니다.)
-        return null;
+        return new ResponseEntity<>(
+            ResponseDTO.builder()
+                    .code(0)
+                    .message("할 일 수정에 성공하였습니다.")
+                    .build(),
+            HttpStatus.OK);
     }
 
     @Transactional
