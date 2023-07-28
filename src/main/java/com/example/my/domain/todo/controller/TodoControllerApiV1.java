@@ -58,6 +58,9 @@ public class TodoControllerApiV1 {
 
         // session에 dto가 없으면 badRequest처리
         LoginUserDTO userDTO = (LoginUserDTO)session.getAttribute("dto");
+        if (userDTO == null) {
+            new BadRequestException("유저 정보가 없습니다.");
+        }
         // TODO : 서비스에서 할 일 완료 수정하기
         return todoServiceApiV1.updateTodoTableData(todoIdx, dto, userDTO);
 
@@ -68,8 +71,13 @@ public class TodoControllerApiV1 {
             @PathVariable Long todoIdx,
             HttpSession session
     ) {
+        // session에 dto가 없으면 badRequest처리
+        LoginUserDTO userDTO = (LoginUserDTO)session.getAttribute("dto");
+        if (userDTO == null) {
+            new BadRequestException("유저 정보가 없습니다.");
+        }
         // TODO : 서비스에서 할 일 삭제하기
-        return null;
+        return todoServiceApiV1.deleteTodoTableData(todoIdx, userDTO);
     }
 
 
